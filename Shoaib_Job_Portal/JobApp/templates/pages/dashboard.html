@@ -1,0 +1,174 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container py-4">
+
+    {% include "pages/messages.html" %}
+
+    <!-- Dashboard Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark">
+                <i class="bi bi-briefcase-fill text-primary"></i>
+                Job Dashboard
+            </h2>
+            <p class="text-muted mb-0">
+                Discover your next opportunity
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold">{{ job_data|length }}</h3>
+                    <small>Total Jobs Available</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Cards -->
+    <div class="row">
+
+        {% for i in job_data %}
+
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-lg h-100 rounded-4 job-card">
+
+                <!-- Top Banner -->
+                <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+                            <h4 class="fw-bold text-primary mb-1">
+                                {{ i.title }}
+                            </h4>
+
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-building"></i>
+                                {{ i.user.company }}
+                            </p>
+                        </div>
+
+                        <span class="badge bg-success px-3 py-2 rounded-pill">
+                            {{ i.category }}
+                        </span>
+
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body px-4">
+
+                    <!-- Location -->
+                    <div class="mb-3">
+
+                        <p class="mb-2 text-dark">
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+                            {{ i.user.address }}
+                        </p>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <p class="text-secondary">
+                            {{ i.description|truncatewords:25 }}
+                        </p>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="mb-3">
+
+                        {% for b in i.skill_set.all %}
+                        <span class="badge bg-light text-dark border px-3 py-2 me-1 mb-1">
+                            {{ b.name }}
+                        </span>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="card-footer bg-white border-0 px-4 pb-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i>
+                            Posted recently
+                        </small>
+
+                        {% if request.user.user_type == "Job_Seeker" %}
+
+                        <a href="{% url 'applyJob' i.id %}"
+                           class="btn btn-primary rounded-pill px-4">
+
+                            <i class="bi bi-send-fill"></i>
+                            Apply Now
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="card border-0 shadow-sm text-center py-5">
+                <div class="card-body">
+                    <i class="bi bi-search display-1 text-muted"></i>
+                    <h4 class="mt-3">No Jobs Found</h4>
+                    <p class="text-muted">
+                        There are currently no job postings available.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+
+    body{
+        background: #f5f7fb;
+    }
+
+    .job-card{
+        transition: all 0.3s ease;
+    }
+
+    .job-card:hover{
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+    }
+
+    .badge{
+        font-size: 13px;
+    }
+
+    .btn-primary{
+        background: linear-gradient(45deg,#0d6efd,#4f8cff);
+        border: none;
+    }
+
+    .btn-primary:hover{
+        background: linear-gradient(45deg,#0b5ed7,#3f7cff);
+    }
+
+</style>
+
+{% endblock body %}

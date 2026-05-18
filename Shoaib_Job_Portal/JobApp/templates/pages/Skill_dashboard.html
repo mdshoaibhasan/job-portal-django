@@ -1,0 +1,196 @@
+{% extends 'base/base.html' %}
+{% block body %}
+
+<div class="container py-5">
+
+    {% include "pages/messages.html" %}
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+
+        <div>
+            <h2 class="fw-bold text-dark">
+                <i class="bi bi-stars text-warning"></i>
+                Recommended Jobs
+            </h2>
+
+            <p class="text-muted mb-0">
+                Find jobs that match your skills and interests
+            </p>
+        </div>
+
+        <div class="card border-0 shadow-sm bg-primary text-white px-4 py-3 rounded-4">
+            <h4 class="fw-bold mb-0">{{ jobs|length }}</h4>
+            <small>Jobs Available</small>
+        </div>
+
+    </div>
+
+    <!-- Jobs Grid -->
+    <div class="row">
+
+        {% for i in jobs %}
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card border-0 shadow-lg rounded-4 h-100 job-card">
+
+                <!-- Card Header -->
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+
+                        <div>
+
+                            <h4 class="fw-bold text-primary mb-1">
+                                {{ i.title }}
+                            </h4>
+
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-building"></i>
+                                {{ i.user.company }}
+                            </p>
+
+                        </div>
+
+                        <span class="badge bg-success rounded-pill px-3 py-2">
+                            {{ i.category }}
+                        </span>
+
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-3">
+
+                        <p class="mb-0 text-dark">
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+                            {{ i.user.address }}
+                        </p>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+
+                        <p class="text-secondary">
+                            {{ i.description|truncatewords:30 }}
+                        </p>
+
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="mb-4">
+
+                        {% for b in i.skill_set.all %}
+
+                        <span class="badge bg-light text-dark border px-3 py-2 me-1 mb-2 skill-badge">
+                            {{ b.name }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <small class="text-muted">
+                            <i class="bi bi-clock-history"></i>
+                            Recently Posted
+                        </small>
+
+                        {% if request.user.user_type == "Job_Seeker" %}
+
+                        <a href="{% url 'applyJob' i.id %}"
+                           class="btn btn-primary rounded-pill px-4">
+
+                            <i class="bi bi-send-fill"></i>
+                            Apply Now
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-lg rounded-4">
+
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-search display-1 text-muted"></i>
+
+                    <h3 class="mt-4 fw-bold">
+                        No Matching Jobs Found
+                    </h3>
+
+                    <p class="text-muted">
+                        Try updating your skills profile to get better job recommendations.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- Custom CSS -->
+<style>
+
+    body{
+        background: #f4f7fb;
+    }
+
+    .job-card{
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .job-card:hover{
+        transform: translateY(-8px);
+        box-shadow: 0 18px 35px rgba(0,0,0,0.08) !important;
+    }
+
+    .skill-badge{
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .skill-badge:hover{
+        background: #0d6efd !important;
+        color: white !important;
+    }
+
+    .btn-primary{
+        background: linear-gradient(45deg, #0d6efd, #4f8cff);
+        border: none;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover{
+        background: linear-gradient(45deg, #0b5ed7, #2563eb);
+    }
+
+    .badge{
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+</style>
+
+{% endblock body %}
